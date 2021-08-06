@@ -3,7 +3,7 @@
 
 **F.A.Q：**
 
-各个队伍的Git管理员在`master`下创建对应队伍文件夹，命名为**队伍英文名**，将自己的题解放到自己队伍对应的文件夹下，`commit`时一定**交代清楚场次**。
+各个队伍的Git管理员在`master`下创建对应队伍`branch`，命名为**队伍英文名**，将自己的题解放到自己队伍对应的分支下，`commit`时一定**交代清楚场次**。
 
 **指令引导：**
 
@@ -23,7 +23,7 @@ git pull
 
 ```bash
 git add .
-git commit "Intro"
+git commit -m "Intro"
 git push
 ```
 
