@@ -6,9 +6,6 @@
 
 #### 题目
 
-链接：https://ac.nowcoder.com/acm/contest/11259/A
-来源：牛客网
-
 Ares is the Greek god of courage and war. He is one of the Twelve Olympians and the son of Zeus and Hera. In Greek literature, he often represents the physical or violent and untamed aspect of war and is the personification of sheer brutality and bloodlust, in contrast to his sister, the armored Athena, whose functions as a goddess of intelligence include military strategy and generalship.
 
  A Toilet-Ares appeared at the western hub of the mysterious East. They took part in ShengJing AUPC(abnormal university programming competition). There are nnn problems in this competition. For some irresistible reason, the Toilet-Ares had got solutions to all of the problems. To ensure the fairness of AUPC, the groups of problems' authors changed the problems immediately. They changed $n-m$ problems in total and enhanced data ranges of simplest aaa of the rest mmm unchanged problems. The Toilet-Ares seemed to have a little intelligence to solve the simplest aaa of unchanged problems, while they seemed not willing to pass harder ones for fear of being exposed(or maybe because they didn't get solutions to the harder ones). They have kkk chances to go to the toilet. Every time they go to toilet, they can attain xix_ixi​ lines of code related to the problem 'k', while has pip_ipi​ probability (in the form of $\frac{y}{z}$​, $0 \leq y \leq z < 4933$​) of failure in solving the problem. Notice that the length of code to solve problem 'k' is lll. It is guaranteed that$\sum x_i = l$.
