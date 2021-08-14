@@ -195,3 +195,58 @@ signed main(){//与int main()一样，但是由于使用了#define int long long
 
 
 
+### K - King of Range
+
+Given nn_{}n integers a1,a2,⋯ ,ana_1,a_2,\cdots,a_na1,a2,⋯,an and mm_{}m queries. For each query, you are given a const kk_{}k and you should determine how many different pairs (l,r)(l,r)_{}(l,r) are there meeting the condition that the range of the subsequence al,al+1,⋯ ,ara_l,a_{l+1},\cdots,a_ral,al+1,⋯,ar is strictly greater than kk_{}k.
+ 
+ Note: the range of a sequence equals the difference between the maximum and the minimum of the sequence.
+
+#### 分析
+
+问有多少个子序列满足：最大值和最小值之差严格大于k。
+
+如果子序列$[i,j]$​满足该条件，则所有包含该子序列的所有子序列，都能满足。
+
+#### 代码
+
+分别维护最小值的递增队列和最大值的递减队列。找到一个满足条件的区间$[i,j]$​，则向后所有的$n-j+1$个右区间都满足条件。
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+int m,n,k;
+long long ans;
+int mm,mx,mi,xi;
+int a[100005],maxi[100005],mini[100005];//mini为维护最小值得递增队列，maxi为维护最大值的递减队列
+int main()
+{
+    cin>>n>>m;
+    for(int i=1;i<=n;i++)cin>>a[i];
+    while(m--){
+        ans=0;
+        cin>>k;
+        mm=mx=mi=xi=1;//mm，mx，mi，xi分别是maxi队首队尾和mini队首队尾
+        maxi[1]=mini[1]=1;
+        int j=1;
+        for(int i=1;i<=n;i++){
+            if(maxi[mx]<i)mx++;
+            if(mini[mm]<i)mm++;
+            while(j<i||a[maxi[mx]]-a[mini[mm]]<=k){
+                if(j==n)break;
+                j++;
+                while(xi>=mx&&a[maxi[xi]]<a[j])--xi;//维护单调递减队列
+                while(mi>=mm&&a[mini[mi]]>a[j])--mi;//维护单调递增队列
+
+                maxi[++xi]=j;
+                mini[++mi]=j;
+            }
+            if(a[maxi[mx]]-a[mini[mm]]<=k)break;
+            ans+=n-j+1;//j后面的所有右区间都满足条件        
+        }
+         
+        cout<<ans<<endl;
+    }
+    return 0;
+}
+```
+
