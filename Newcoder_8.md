@@ -145,5 +145,38 @@ int main(){
 }
 ```
 
+### E - Rise of Shadows
+
+#### 题目描述
+
+Rumor has it that shadows rise in a prime leap year. A prime leap year is a leap year, and the year number is also a prime number.
+
+ Toilet-Ares has recently learned the definitions of leap year and prime number. Given a specific year number, he wants to know if it is a prime leap year.
+
+ Recall that
+   · every year that is exactly divisible by four is a leap year, except for years that are exactly divisible by $100$, but these centurial years are leap years if they are exactly divisible by $400$;
+   · a prime number (or a prime) is a positive integer greater than one that is not a product of two smaller positive integers.
+
+#### 分析
+
+如果一个年份是闰年也是质数，输出yes，否则输出no
+
+闰年不可能是质数
+
+#### 代码
+
+```c++
+#include <cstdio>
+
+int main() {
+    int t,a;
+    scanf("%d",&t);
+    while (t--){
+        scanf("%d",&a);
+        printf("no\n");
+    return 0;
+}
+```
+
 
 

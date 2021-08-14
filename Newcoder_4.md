@@ -2,6 +2,67 @@
 
 ## 题解
 
+### LCS
+
+#### 题目描述
+
+Let $LCS(s1,s2)$ denote the length of the longest common subsequence (not necessary continuity) of string $s1$ and string $s2$.
+
+Now give you four integers a,b,c,na,b,c,na,b,c,n, you need to find three lowercase character strings $s1, s2 , s3$ satisfy that $∣s1∣=∣s2∣=∣s3∣= n  $
+
+and  $LCS(s1,s2)=a,LCS(s2,s3)=b,LCS(s1,s3)=c$。
+
+##题目大意
+定义$LCS(s1,s2)=a$的含义为两个字符串$s1，s2$中有$a$个相同的字符,如
+
+$s1:$ aabbcx
+$s2:$ aacyyy
+$s3:$ aabbzz
+
+其中 $LCS(s1,s2)=3, LCS(s2,s3)=2, LCS(s1,s3)=4$,
+给定 $a,b,c,n $ 四个数字，要求按照规则输出三个字符串，字符串的长度都为n，并且$a,b,c$的值分别为$LCS（s1，s2），LCS（s2，s3），LCS（s3,s1)$的值，求三个符合条件的字符串。若无法符合题目条件则输出“NO”
+##题目分析
+在这道题目中，通过概念可知，输出的三个字符串应该在满足$LCS$为$a,b,c$的情况下同时使得字符串长度最小，才能最大化满足$n$的条件。同时若要满足最短的输出条件就应该找出$a,b,c$中最少的一个数字，并且用一个相同的字符填充这个最小值的次数，之后对每个字符串来说，填充字母只需要让$a,b,c$每个字母减去他们的最小值后进行填充，例如在$a,b,c,n$分别为$3,4,5,7$的情况下，最小的值为$3$，则每个字符串在填充完$3$个a后，第一个字符串再填充$(3-3)$个b和$(5-3)$个d，最后填充$(7-5)$个x，按着这样的规律最后得到的字符串如下：
+
+
+$s1:$ aaaddxx
+$s2:$ aaacyyy
+$s3:$ aaacddz
+
+同时我们也可以发现，假设$a$为$a,b,c$中最小的数值，则$n$的值不能小于$(b+c-a)$,若$n$小于$(b+c-a)$则三个数组无法全部构建。即输出NO。代码片段如下：
+
+```c++
+    
+#include<bits/stdc++.h>
+using namespace std;
+
+int MIN(int a,int b,int c){
+    return min(a,min(b,c));
+}
+
+int main(){
+    int a,b,c,n;
+    while(cin>>a>>b>>c>>n){
+    int m = MIN(a,b,c);
+    a -= m,b -= m,c -= m;
+    if(a + b + c + m > n){
+        puts("NO");
+        return 0;
+    }
+
+    string s1(m,'a'),s2(m,'a'),s3(m,'a');
+    while(a--)s1+='b',s2+='b';
+    while(b--)s2+='c',s3+='c';
+    while(c--)s3+='d',s1+='d';
+    while(s1.size() < n)s1 += 'x';
+    while(s2.size() < n)s2 += 'y';
+    while(s3.size() < n)s3 += 'z';
+    cout<<s1<<"\n"<<s2<<"\n"<<s3;
+    }
+}
+
+```
+
 ### F - Just a joke
 
 #### 题目
@@ -265,5 +326,4 @@ int main(){
 	printf("%.10lf\n",ans);
 }
 ```
-
 
