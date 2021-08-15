@@ -51,3 +51,50 @@ int main(){
 
 
 
+### H - xay loves count
+
+#### 题目描述
+
+xay has an array a of length n, he wants to know how many triples (i, j, k) satisfy ai×aj=ak​。
+##题目大意
+xay有一个数组，他想知道在这个数组里能找到多少个$i,j,k$满足$ai * aj = ak$（$i,j,k$可以相同）输出数组中这样的对数。
+##题目分析
+题目给定的数组最大值为1e6,则我们可以利用和桶排序类似的想法，对输入的数组进行桶排序，这样得到的$B$数组中第$n$个元素的值$B[n]$代表的就是n在之前数组中出现过的次数，之后，我们从大往小开始判断，设从大到小取出的值为$n$，则我们可以从数组最小值开始搜索到$\sqrt{n}$,设每次取出的值为$m$，则当$n\%m$等于$0$且$n/m$时，我们就对输出结果增加$B[m]*B[n/m]$的值。遍历完得到的结果即为答案。
+代码片段如下
+
+```c++
+#include<iostream>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+const int maxn =1e6+7;
+int A[maxn];
+int B[maxn];
+long long ans=0;
+
+int main() {
+	int n;
+	scanf("%d",&n);
+	for(int i=0; i<n; i++) {
+		scanf("%d",&A[i]);
+		B[A[i]]++;
+	}
+	sort(A,A+n);
+	
+	for(int i=n-1; i>=0; i--) {
+		for(int j=1; j<=sqrt(A[i]); j++) {
+
+			if(B[j]==0||A[i]%j!=0||B[A[i]/j]==0) {
+				continue;
+			}
+			if (j==sqrt(A[i])) {
+				ans+=pow(B[j],2);
+			} else if(B[A[i]]!=0) {
+				ans+=B[j]*2*B[A[i]/j];
+			}
+		}
+	}
+	printf("%lld\n",ans);
+}
+```
+
