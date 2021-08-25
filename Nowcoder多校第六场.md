@@ -1,79 +1,5 @@
 # Nowcoder 多校联合第六场
 
-## K.King of Range
-
-**题解：**
-
-大概的意思就是，我们有一个环形的序列（可以想象成钟表）然后给了你$m$​个不相交的区间，现在让我们找$k$​个序列，能满足：这$k$个序列的交集就是$m$个区间的并集。
-
-给的思路就是：我们每一次取当前区间的左端点，然后以当前的左端点为构造区间的左端点，选取他的上一个区间的右端点为构造区间的右端点（如果是第一个区间则取第$m$个区间对应的位置），最后我们发现这$m$个构造区间的交集就是所有给定区间的并集。
-
-```cpp
-#include <bits/stdc++.h>
-
-#define ill __int128
-#define ll long long
-#define PII pair <ll,ll>
-#define ull unsigned long long
-#define me(a,b) memset (a,b,sizeof(a))
-#define rep(i,a,b) for (int i = a;i <= b;i ++)
-#define req(i,a,b) for (int i = a;i >= b;i --)
-#define ios std :: ios :: sync_with_stdio(false)
-
-const double Exp = 1e-9;
-const int INF = 0x3f3f3f3f;
-const int inf = -0x3f3f3f3f;
-const ll mode = 1000000007;
-const double pi = 3.141592653589793;
-
-using namespace std;
-
-const int maxn = 1e5 + 10;
-ll a[maxn] = {}, k;
-ll Q1[maxn], Q2[maxn];
-int head1, head2, point1, point2, l;
-int n ,m;
-
-void init()
-{
-    me(Q1, 0);me(Q2, 0);
-    head1 = head2 = 0;
-    point1 = point2 = -1;
-    l = 1;
-}
-
-void solve()
-{
-    ll ans = 0;
-    scanf ("%lld", &k);
-    for (int i = 1;i <= n;i ++) {
-        while (head1 <= point1 && a[Q1[point1]] <= a[i]) point1 --;
-        Q1[++ point1] = i;
-        while (head2 <= point2 && a[Q2[point2]] >= a[i]) point2 --;
-        Q2[++ point2] = i;
-        while (l <= i && a[Q1[head1]] - a[Q2[head2]] > k) {
-            ans += (n - i + 1);
-            l ++;
-            if (l > Q1[head1]) head1 ++;
-            if (l > Q2[head2]) head2 ++;
-        }
-    }
-    printf ("%lld\n", ans);
-    return ;
-}
-
-int main()
-{
-    scanf ("%d%d", &n, &m);
-    for (int i = 1;i <= n;i ++) scanf ("%lld", &a[i]);
-    while ( m -- ) {
-        init();
-        solve();
-    }
-    return 0;
-}
-```
-
 ## F.Hamburger Steak
 
 **题解：**
@@ -141,6 +67,181 @@ int main()
 }
 ```
 
-## H.Holding Two
+## H.Hopping Rabbit
 
-先咕咕了......后面补上QAQ
+扫描线问题
+
+首先这个题这个兔子只能挖一次洞，换句话说如果确定了兔子的起始位置，我们就一定可以知道它可以到达的洞口：$(x + d,y),(x - d ,y),(x, y + d),(x, y - d)$。我们可以把所有陷阱全部放到一个$d \times d$的矩形里，每一个陷阱在这个区域里的位置就是他们**相对于兔子可达点**的位置。所以我们可以把问题直接简化到一个$(1,1)$到$(d,d)$的矩形上。最后需要做的就是维护每一列有没有空隙，相当于维护了一个区间最小值，如果有的话就直接输出坐标即可，这里就是扫描线的问题了。
+
+**AC代码：**
+
+```cpp
+#include <bits/stdc++.h>
+
+#define ill __int128
+#define ll long long
+#define PII pair <int,int>
+#define ull unsigned long long
+#define me(a,b) memset (a,b,sizeof(a))
+#define rep(i,a,b) for (int i = a;i <= b;i ++)
+#define req(i,a,b) for (int i = a;i >= b;i --)
+#define ios std :: ios :: sync_with_stdio(false)
+
+const double Exp = 1e-9;
+const int INF = 0x3f3f3f3f;
+const int inf = -0x3f3f3f3f;
+const int mode = 1000000007;
+const double pi = 3.141592653589793;
+
+using namespace std;
+
+const int maxn = 2e5 + 10;
+int n, d;
+vector<PII> In[maxn], Out[maxn];
+
+struct SegmenTree
+{
+    int l, r;
+    int val, add;
+}t[maxn << 2];
+
+inline void pushdown(int p)
+{
+    if (t[p].add) {
+        t[2 * p].add += t[p].add;t[2 * p + 1].add += t[p].add;
+        t[2 * p].val += t[p].add;t[2 * p + 1].val += t[p].add;
+        t[p].add = 0;
+    }
+    return ;
+}
+
+inline void pushup(int p)
+{
+    t[p].val = min(t[2 * p].val, t[2 * p + 1].val);
+    return ;
+}
+
+inline void buildTree(int p, int l, int r)
+{
+    t[p].l = l;t[p].r = r;
+    t[p].val = t[p].add = 0;
+    if (l == r) return ;
+    int mid = (l + r) >> 1;
+    buildTree(2 * p, l, mid);
+    buildTree(2 * p + 1, mid + 1, r);
+    pushup(p);
+    return ;
+}
+
+inline void solve(int x1, int y1, int x2, int y2)
+{   
+    int xl, yl, xr, yr;
+    if (x2 - x1 >= d) {
+        xl = 1;
+        xr = d;
+    }
+    else {
+        xl = (x1 % d + d) % d + 1;
+        xr = ((x2 - 1) % d + d) % d + 1;
+    }
+    if (y2 - y1 >= d) {
+        yl = 1;
+        yr = d;
+    }
+    else {
+        yl = (y1 % d + d) % d + 1;
+        yr = ((y2 - 1) % d + d) % d + 1;
+    }
+    if (xl <= xr) {
+        if (yl <= yr) {
+            In[xl].push_back({yl, yr});
+            Out[xr + 1].push_back({yl, yr});
+        }
+        else {
+            In[xl].push_back({yl, d});
+            Out[xr + 1].push_back({yl, d});
+            In[xl].push_back({1, yr});
+            Out[xr + 1].push_back({1, yr});
+        }
+    }
+    else {
+        if (yl <= yr) {
+            In[xl].push_back({yl, yr});
+            Out[d + 1].push_back({yl, yr});
+            In[1].push_back({yl, yr});
+            Out[xr + 1].push_back({yl, yr});
+        }
+        else {
+            In[xl].push_back({1, yr});
+            Out[d + 1].push_back({1, yr});
+            In[xl].push_back({yl, d});
+            Out[d + 1].push_back({yl, d});
+            In[1].push_back({1, yr});
+            Out[xr + 1].push_back({1, yr});
+            In[1].push_back({yl, d});
+            Out[xr + 1].push_back({yl, d});
+        }
+    }
+    return ;
+}
+
+inline int ask(int p, int l, int r)
+{
+    if (l <= t[p].l && t[p].r <= r) return t[p].val;
+    pushdown(p);
+    int mid = (t[p].l + t[p].r) >> 1;
+    int ans = INF;
+    if (l <= mid) ans = min(ans, ask(2 * p, l, r));
+    if (r > mid) ans = min(ans, ask(2 * p + 1, l, r));
+    return ans;
+}
+
+inline void update(int p, int l, int r, int d)
+{
+    if (t[p].l >= l && t[p].r <= r) {
+        t[p].val += d;
+        t[p].add += d;
+        return ;
+    }
+    pushdown(p);
+    int mid = (t[p].l + t[p].r) >> 1;
+    if (l <= mid) update (2 * p, l, r, d);
+    if (r > mid) update (2 * p + 1, l, r, d);
+    pushup(p);
+    return ;
+}
+
+int main()
+{
+    scanf ("%d%d", &n, &d);
+    for (int i = 1;i <= n;i ++) {
+        int x1, x2, y1, y2;
+        scanf ("%d%d%d%d", &x1, &y1, &x2, &y2);
+        solve(x1, y1, x2, y2);
+    }
+    buildTree(1, 1, d);
+    int ansx, ansy, flag = 0;
+    for (int i = 1;i <= d;i ++) {
+        for (auto k : In[i]) update(1, k.first, k.second, 1);
+        for (auto k : Out[i]) update(1, k.first, k.second, -1);
+        if (ask(1, 1, d) == 0) {
+            for (int j = 1;j <= d;j ++) {
+                if (ask(1, j, j) == 0) {
+                    ansx = i;
+                    ansy = j;
+                    flag = 1;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    if (flag) {
+        printf ("YES\n");
+        printf ("%d %d\n", ansx - 1 + d, ansy - 1 + d);
+    }
+    else printf ("NO\n");
+    return 0;
+}
+```
+
