@@ -178,5 +178,74 @@ int main() {
 }
 ```
 
+### k - Yet Another Problem About Pi
+#### 题目描述
+On a distant planet of dreams, Toilet-Ares is packing up the things and memories, ready to commerce a new adventurous road trip. With outstanding driving skills, the driving route may be a segment, a curve, a polyline, and it can be closed (end-to-end), even self-intersect, as long as the route is continuous. The fuel capacity, oddly enough, can support π km driving. Thus, the route has a maximum total length of πkm.
 
+The planet's surface is expansive and flat enough to regard as a plane. A Cartesian coordinate system, formed with longitude and latitude, is used to describe each geographical position on the planet. Every $w$ km, draw a line of points with some equal longitude, named meridian. Similarly, every $d$ km, draw a line of points with some equal latitude, named parallel. Notice that innumerous meridians are perpendicular to innumerous parallels, constructing a grid called graticule, dividing the plane into infinite cells. Inhabitants there are used to defining those cells as regions, and to avoid conflict, positions on meridians or parallels belong to no region.
 
+There are so many different kinds of landscapes to see, to admire, to experience. Toilet-Ares starts the drive at an arbitrary position on the planet. Whenever passing a region for the first time, Toilet-Ares will remember its visual feature (which is always distinguishable from any other region). So, it will be easy for Toilet-Ares to count up the number of regions visited as the road trip ends.
+
+For example, in both situations shown below, four different regions are visited along the route.
+
+#### 题目大意
+
+在一个经纬度每个格子区域为$m$km和$n$km的星球上，每$n*m$面积的区域就是一个格子，给定你$π$km的燃料，试问最多能走过多少格子。
+
+#### 题目分析0
+
+容易发现，题目中分两种情况，判断$min(n,m)$与$\sqrt{n^2+m^2}$的大小以此来决定是走直线还是对角线。在主体走完后，判断剩余的长度是否能够通过修改已经走过的路线的方式来多走一步，如把一个斜着走变成两格直着走
+
+#### 代码片段
+
+```c++
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+typedef long long ll;
+const double PI = 3.14159265358979323846;
+const double st2 = sqrt(2);
+ 
+int main() {
+    int t;
+    double w,d,mind,l;
+    scanf("%d",&t);
+    ll ans=0;
+    while (t--) {
+        scanf("%lf%lf",&w,&d);
+        mind = min(w,d);
+        l = sqrt(w*w+d*d);
+        if(PI<mind) {
+            ans=4;
+        } else if(l*2>mind*3) {
+            ans=2;
+            ll n = (ll)(PI / mind);
+            if(PI-n*mind>l-mind) {
+                ans++;
+                if(PI-n*mind>2*(l-mind)) {
+                    ans++;
+                }
+            }
+            ans+=(n+1)*2;
+        } else {
+            ans=1;
+            ll n =(ll )(PI / l);
+     
+            if(PI-n*l>2*mind-l) {
+                ans++;
+                if(PI-n*l>mind) {
+                    ans++;
+                }
+            }
+            ans+=(n+1)*3;
+        }
+        printf("%lld\n",ans);
+ 
+    }
+ 
+ 
+    return 0;
+}
+```
